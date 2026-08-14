@@ -1,0 +1,25 @@
+#!/bin/sh
+
+expected_email='91787866+yuweiyang9611@users.noreply.github.com'
+zero='0000000000000000000000000000000000000000'
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  if [ "$local_sha" = "$zero" ]; then
+    continue
+  fi
+
+  if [ "$remote_sha" = "$zero" ]; then
+    revisions="$local_sha"
+  else
+    revisions="$remote_sha..$local_sha"
+  fi
+
+  for commit in $(git rev-list "$revisions"); do
+    author_email=$(git show -s --format='%ae' "$commit")
+    committer_email=$(git show -s --format='%ce' "$commit")
+    if [ "$author_email" != "$expected_email" ] || [ "$committer_email" != "$expected_email" ]; then
+      echo "Push blocked: commit $commit does not use the configured GitHub noreply email." >&2
+      exit 1
+    fi
+  done
+done

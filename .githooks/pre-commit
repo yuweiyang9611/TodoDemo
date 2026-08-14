@@ -1,0 +1,12 @@
+#!/bin/sh
+
+expected_email='91787866+yuweiyang9611@users.noreply.github.com'
+
+author_email=$(git var GIT_AUTHOR_IDENT | sed -n 's/.*<\([^>]*\)>.*/\1/p')
+committer_email=$(git var GIT_COMMITTER_IDENT | sed -n 's/.*<\([^>]*\)>.*/\1/p')
+
+if [ "$author_email" != "$expected_email" ] || [ "$committer_email" != "$expected_email" ]; then
+  echo "Commit blocked: author and committer must use the configured GitHub noreply email." >&2
+  echo "Run: git config --local user.email '$expected_email'" >&2
+  exit 1
+fi

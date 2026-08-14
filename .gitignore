@@ -1,0 +1,16 @@
+﻿bin/
+obj/
+/packages/
+node_modules/
+dist/
+.npm-cache/
+riderModule.iml
+/_ReSharper.Caches/
+.idea
+.config
+*.sln.DotSettings.user
+.vs
+.dotnet-cli/
+Debug
+BaiduTranslateApi/appsettings.Development.json
+AI_Record

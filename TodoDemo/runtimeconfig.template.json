@@ -1,0 +1,8 @@
+﻿{
+  "configProperties": {
+    "System.Net.Http.SocketsHttpHandler.Http3Support": true,
+    "System.Net.Sockets.NoDelay": true,
+    "Switch.System.Globalization.EnforceJapaneseEraYearRanges": true
+    
+  }
+}
