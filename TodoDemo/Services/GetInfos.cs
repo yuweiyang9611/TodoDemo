@@ -4,7 +4,7 @@ using TodoDemo.DTOs;
 
 namespace TodoDemo.Services;
 
-public class GetInfos(ILogger<GetInfos> logger)
+public sealed class GetInfos(ILogger<GetInfos> logger)
 {
     public SystemInfoDto GetSystemInfos()
     {
@@ -71,8 +71,9 @@ public class GetInfos(ILogger<GetInfos> logger)
                 EditionId = editionId,
             };
         }
-        catch
+        catch (Exception exception)
         {
+            logger.LogWarning(exception, "Unable to read Windows version information from the registry.");
             return null;
         }
     }
@@ -81,25 +82,26 @@ public class GetInfos(ILogger<GetInfos> logger)
     {
         try
         {
-            var pStr = BrandingFormatString("%WINDOWS_LONG%");
-            if (pStr == IntPtr.Zero)
+            var pointer = BrandingFormatString("%WINDOWS_LONG%");
+            if (pointer == IntPtr.Zero)
                 return null;
-            var result = Marshal.PtrToStringUni(pStr);
+
             try
             {
-                // pStr指向的非托管资源的内存空间由 GlobalAlloc 分配，需要调用GlobalFree释放该非托管资源
-                GlobalFree(pStr);
+                return Marshal.PtrToStringUni(pointer);
             }
-            catch
+            finally
             {
-                logger.LogCritical("pStr指针指向的资源释放失败");
-                throw;
+                // BrandingFormatString uses GlobalAlloc; GlobalFree returns zero on success.
+                if (GlobalFree(pointer) != IntPtr.Zero)
+                {
+                    logger.LogWarning("Unable to release memory returned by BrandingFormatString.");
+                }
             }
-
-            return result;
         }
-        catch
+        catch (Exception exception)
         {
+            logger.LogWarning(exception, "Unable to read the Windows product name.");
             return null;
         }
     }

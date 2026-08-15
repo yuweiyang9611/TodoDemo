@@ -1,5 +1,11 @@
 # React + TypeScript + Vite
 
+本客户端使用严格 TypeScript、运行时 JSON 校验、可辨识联合事件和符合 React Strict Mode 生命周期的 SignalR Hook。
+
+开发环境通过 Vite 将 /api 和 /todoHub 代理到后端。完整运行方式与设计说明见 ../../docs/ARCHITECTURE_AND_BEST_PRACTICES.md。
+
+以下内容保留 Vite 模板的扩展配置参考。
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

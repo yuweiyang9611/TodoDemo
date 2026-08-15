@@ -11,6 +11,9 @@ riderModule.iml
 *.sln.DotSettings.user
 .vs
 .dotnet-cli/
-Debug
 BaiduTranslateApi/appsettings.Development.json
 AI_Record
+
+# Python tooling caches
+__pycache__/
+*.py[cod]

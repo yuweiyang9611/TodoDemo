@@ -1,39 +1,125 @@
-﻿import {useEffect, useRef} from "react";
+import {useEffect, useState} from "react";
 import * as signalR from "@microsoft/signalr";
-import {type Todo} from "./api";
+import {HUB_URL, parseTodo, type Todo} from "./api";
 
-const hubUrl = "http://localhost:5200/todoHub";
+export type TodoEvent =
+    | {type: "added"; todo: Todo}
+    | {type: "updated"; todo: Todo}
+    | {type: "deleted"; id: string};
 
-export function useTodoUpdates(onEvent: (type: string, payload: any) => void) {
-    const startedRef = useRef(false);
+export type ConnectionStatus =
+    | "connecting"
+    | "connected"
+    | "reconnecting"
+    | "disconnected";
+
+const initialRetryDelayMs = 2_000;
+
+export function useTodoUpdates(
+    onEvent: (event: TodoEvent) => void,
+    onReconnected: () => void | Promise<void>,
+): ConnectionStatus {
+    const [status, setStatus] = useState<ConnectionStatus>("connecting");
+
     useEffect(() => {
-        if (startedRef.current) return;
-        startedRef.current = true;
+        let disposed = false;
+        let retryTimer: number | undefined;
 
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl(hubUrl)
+            .withUrl(HUB_URL)
             .withAutomaticReconnect()
             .build();
 
-        async function start() {
+        const handleAdded = (value: unknown) => {
+            try {
+                onEvent({type: "added", todo: parseTodo(value)});
+            } catch (error) {
+                console.warn("Ignored an invalid TodoAdded event.", error);
+            }
+        };
+        const handleUpdated = (value: unknown) => {
+            try {
+                onEvent({type: "updated", todo: parseTodo(value)});
+            } catch (error) {
+                console.warn("Ignored an invalid TodoUpdated event.", error);
+            }
+        };
+        const handleDeleted = (id: unknown) => {
+            if (typeof id === "string") {
+                onEvent({type: "deleted", id});
+            } else {
+                console.warn("Ignored an invalid TodoDeleted event.");
+            }
+        };
+
+        const scheduleStart = () => {
+            if (disposed) {
+                return;
+            }
+
+            window.clearTimeout(retryTimer);
+            retryTimer = window.setTimeout(() => {
+                void start();
+            }, initialRetryDelayMs);
+        };
+
+        const start = async () => {
+            if (disposed
+                || connection.state !== signalR.HubConnectionState.Disconnected) {
+                return;
+            }
+
+            setStatus("connecting");
             try {
                 await connection.start();
-                console.log("✅ SignalR connected");
-            } catch (err) {
-                console.warn("❌ SignalR failed, retrying in 2s", err);
-                setTimeout(start, 2000);
+                if (!disposed) {
+                    setStatus("connected");
+                }
+            } catch (error) {
+                if (!disposed) {
+                    setStatus("disconnected");
+                    console.warn("SignalR start failed; retrying.", error);
+                    scheduleStart();
+                }
             }
-        }
+        };
 
-        connection.on("TodoAdded", (todo: Todo) => onEvent("add", todo));
-        connection.on("TodoUpdated", (todo: Todo) => onEvent("update", todo));
-        connection.on("TodoDeleted", (id: number) => onEvent("delete", id));
+        connection.on("TodoAdded", handleAdded);
+        connection.on("TodoUpdated", handleUpdated);
+        connection.on("TodoDeleted", handleDeleted);
+        connection.onreconnecting(() => {
+            if (!disposed) {
+                setStatus("reconnecting");
+            }
+        });
+        connection.onreconnected(() => {
+            if (!disposed) {
+                setStatus("connected");
+                void Promise.resolve(onReconnected()).catch(error => {
+                    console.warn("Unable to refresh after reconnecting.", error);
+                });
+            }
+        });
+        connection.onclose(() => {
+            if (!disposed) {
+                setStatus("disconnected");
+                scheduleStart();
+            }
+        });
 
-        start().then();
-
+        void start();
 
         return () => {
-            connection.stop().then();
+            disposed = true;
+            window.clearTimeout(retryTimer);
+            connection.off("TodoAdded", handleAdded);
+            connection.off("TodoUpdated", handleUpdated);
+            connection.off("TodoDeleted", handleDeleted);
+            void connection.stop().catch(error => {
+                console.warn("Unable to stop SignalR cleanly.", error);
+            });
         };
-    }, []);
+    }, [onEvent, onReconnected]);
+
+    return status;
 }

@@ -1,44 +1,239 @@
 #root {
-    max-width: 1280px;
+    min-height: 100vh;
+}
+
+.todo-shell {
+    width: min(720px, calc(100% - 32px));
     margin: 0 auto;
-    padding: 2rem;
+    padding: 64px 0;
+}
+
+.todo-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.eyebrow {
+    margin: 0 0 8px;
+    color: #2563eb;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+h1,
+h2,
+p {
+    margin-top: 0;
+}
+
+h1 {
+    margin-bottom: 8px;
+    font-size: clamp(2rem, 6vw, 3.25rem);
+    line-height: 1;
+    letter-spacing: -0.045em;
+}
+
+.subtitle {
+    max-width: 520px;
+    margin-bottom: 0;
+    color: #64748b;
+}
+
+.connection {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 999px;
+    color: #475569;
+    background: rgba(255, 255, 255, 0.7);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.connection__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #f59e0b;
+}
+
+.connection--connected .connection__dot {
+    background: #16a34a;
+}
+
+.connection--disconnected .connection__dot {
+    background: #dc2626;
+}
+
+.todo-form,
+.todo-list {
+    border: 1px solid #dbe3ee;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 14px 40px rgba(15, 23, 42, 0.06);
+}
+
+.todo-form {
+    padding: 20px;
+}
+
+.todo-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+    font-weight: 750;
+}
+
+.todo-form__controls {
+    display: flex;
+    gap: 10px;
+}
+
+.todo-form input {
+    min-width: 0;
+    flex: 1;
+    padding: 12px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    color: #172033;
+    background: #f8fafc;
+}
+
+.todo-form button,
+.error-banner button {
+    padding: 11px 18px;
+    border: 0;
+    border-radius: 10px;
+    color: #fff;
+    background: #2563eb;
+    font-weight: 750;
+}
+
+.error-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 16px 0;
+    padding: 12px 14px;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    color: #991b1b;
+    background: #fff1f2;
+}
+
+.error-banner button {
+    padding: 7px 11px;
+    background: #b91c1c;
+}
+
+.todo-list {
+    margin-top: 16px;
+    overflow: hidden;
+}
+
+.todo-list__heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.todo-list__heading h2 {
+    margin-bottom: 0;
+    font-size: 1rem;
+}
+
+.todo-list__heading span {
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+.todo-list ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.todo-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 58px;
+    padding: 10px 14px 10px 20px;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.todo-list li:last-child {
+    border-bottom: 0;
+}
+
+.todo-item {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    align-items: center;
+    gap: 12px;
+}
+
+.todo-item input {
+    width: 18px;
+    height: 18px;
+    accent-color: #2563eb;
+}
+
+.todo-item__title {
+    overflow-wrap: anywhere;
+}
+
+.todo-item__title--done {
+    color: #94a3b8;
+    text-decoration: line-through;
+}
+
+.delete-button {
+    padding: 8px 10px;
+    border: 0;
+    border-radius: 8px;
+    color: #b91c1c;
+    background: transparent;
+    font-weight: 700;
+}
+
+.delete-button:hover {
+    background: #fff1f2;
+}
+
+.empty-state {
+    margin: 0;
+    padding: 48px 20px;
+    color: #64748b;
     text-align: center;
 }
 
-.logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
-}
-
-.logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
-}
-
-.logo.react:hover {
-    filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-    from {
-        transform: rotate(0deg);
+@media (max-width: 640px) {
+    .todo-shell {
+        padding: 32px 0;
     }
-    to {
-        transform: rotate(360deg);
+
+    .todo-header {
+        flex-direction: column;
     }
-}
 
-@media (prefers-reduced-motion: no-preference) {
-    a:nth-of-type(2) .logo {
-        animation: logo-spin infinite 20s linear;
+    .todo-form__controls {
+        flex-direction: column;
     }
-}
 
-.card {
-    padding: 2em;
-}
-
-.read-the-docs {
-    color: #888;
+    .todo-form button {
+        width: 100%;
+    }
 }

@@ -1,47 +1,60 @@
-using System.Collections.Concurrent;
-using TodoDemo;
-using TodoDemo.Services;
 using Serilog;
+using TodoDemo;
+using TodoDemo.Repositories;
+using TodoDemo.Services;
+
+const string localClientsPolicy = "LocalClients";
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, services, configuration) => configuration
+    .ReadFrom.Configuration(context.Configuration)
+    .ReadFrom.Services(services)
+    .Enrich.FromLogContext()
+    .WriteTo.Console());
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
+builder.Services.AddProblemDetails();
 
-builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
-builder.Services.AddSingleton<ConcurrentDictionary<Guid, Todo>>(_ => new ConcurrentDictionary<Guid, Todo>());
-
+builder.Services.AddSingleton<ITodoRepository, InMemoryTodoRepository>();
 builder.Services.AddGetInfosServices();
 
-builder.Services.AddCors(cors =>
-    cors.AddDefaultPolicy(policy => policy.SetIsOriginAllowed(IsLocalhost)
-        .AllowCredentials().AllowAnyHeader().AllowAnyMethod()));
+var allowedOrigins = builder.Configuration
+    .GetSection("Cors:AllowedOrigins")
+    .Get<string[]>() ?? [];
+
+if (allowedOrigins.Length == 0)
+{
+    throw new InvalidOperationException("At least one CORS origin must be configured.");
+}
+
+builder.Services.AddCors(options => options.AddPolicy(localClientsPolicy, policy => policy
+    .WithOrigins(allowedOrigins)
+    .AllowCredentials()
+    .AllowAnyHeader()
+    .AllowAnyMethod()));
 
 builder.Services.AddSignalR();
 
 var app = builder.Build();
 
-app.UseCors();
-app.MapControllers();
-app.MapHub<TodoHub>("/todoHub");
-
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseExceptionHandler();
+}
+
+app.UseSerilogRequestLogging();
+app.UseCors(localClientsPolicy);
+
+app.MapControllers();
+app.MapHub<TodoHub>("/todoHub");
+app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
 
 app.Run();
-
-return;
-
-// 判断是否为Localhost
-bool IsLocalhost(string origin)
-{
-    var result = origin.StartsWith("http://localhost") ||
-                 origin.StartsWith("http://127.0.0.1") ||
-                 origin.StartsWith("https://localhost") ||
-                 origin.StartsWith("https://127.0.0.1");
-    return result;
-}

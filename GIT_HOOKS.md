@@ -41,6 +41,20 @@ true
 
 启用后，提交或推送中只要 author 或 committer 不是上述 noreply 邮箱，就会被 hooks 阻止。
 
+GitHub 上的 push 和 pull request 还会运行 `.github/workflows/privacy.yml`。该检查会：
+
+- 拒绝 author 或 committer 未使用 GitHub noreply 邮箱的新增提交；
+- 扫描 Git 跟踪的文本文件，拒绝其中的非 noreply 邮箱；
+- 发现问题时只输出文件名和行号，不在日志中再次显示邮箱内容。
+
+本地可以提前运行同一份内容扫描：
+
+```powershell
+py -3 ./scripts/check_email_privacy.py
+```
+
+在 macOS、Linux 或已将 Python 加入 `PATH` 的环境中，可将 `py -3` 换成 `python3`。
+
 ## 手动启用
 
 如果不运行脚本，也可以在项目根目录执行：

@@ -1,5 +1,5 @@
 ﻿namespace TodoDemo;
 
-public record Todo(Guid Id,
+public sealed record Todo(Guid Id,
     string Title,
     bool IsDone);

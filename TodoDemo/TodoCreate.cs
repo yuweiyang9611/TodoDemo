@@ -1,3 +1,6 @@
-﻿namespace TodoDemo;
+﻿using System.ComponentModel.DataAnnotations;
 
-public record TodoCreate(string Title);
+namespace TodoDemo;
+
+public sealed record TodoCreate(
+    [Required, StringLength(200, MinimumLength = 1)] string Title);

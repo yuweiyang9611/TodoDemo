@@ -2,6 +2,6 @@
 
 namespace TodoDemo;
 
-public class TodoHub : Hub<ITodoClient>
+public sealed class TodoHub : Hub<ITodoClient>
 {
 }
