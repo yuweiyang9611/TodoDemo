@@ -12,6 +12,9 @@
 - `TodoDemo/web/`：Vite + React + TypeScript 客户端
 - `TodoDemo/app/`：Flutter 跨平台客户端
 
+## Git hooks
+
+在新设备克隆本仓库后，请按照 [GIT_HOOKS.md](GIT_HOOKS.md) 启用提交与推送前的邮箱保护 hooks。
 ## 验证
 
 ```powershell
