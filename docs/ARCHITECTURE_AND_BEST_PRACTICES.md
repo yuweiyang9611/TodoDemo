@@ -177,7 +177,7 @@ Serilog 通过 Host 集成读取配置，并记录 HTTP 请求。业务代码继
 
 ### 6.8 SDK 与依赖管理
 
-`global.json` 固定到 .NET 10 的 300 feature band，并允许同 feature band 的最新补丁版本。这样既避免每台机器选到不同主版本，也能接收补丁修复。
+仓库不锁定 .NET SDK 版本，构建使用本机已装的最新 SDK，只要求 .NET 10 或更高版本；目标框架 `net10.0` 由各项目文件决定，不随 SDK 变化。`global.json` 只用来选择测试运行器（Microsoft.Testing.Platform）。
 
 ASP.NET Core SignalR 服务端已经包含在共享框架中，不应再引用旧的 `Microsoft.AspNetCore.SignalR 1.x` 包。未使用的 Newtonsoft.Json 也已移除。项目将编译警告视为错误，防止警告长期积累。
 
@@ -337,7 +337,7 @@ Android 主清单包含 INTERNET 权限。本地 API 使用 HTTP，因此只有 
 
 ### 10.1 前置环境
 
-- .NET SDK 10.0.300 feature band 或兼容补丁版本。
+- .NET SDK 10 或更高版本。
 - Node.js 与 npm。
 - Flutter 3.35.x / Dart 3.9.x 或满足 `pubspec.yaml` 的兼容稳定版本。
 
