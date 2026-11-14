@@ -177,7 +177,7 @@ Serilog 通过 Host 集成读取配置，并记录 HTTP 请求。业务代码继
 
 ### 6.8 SDK 与依赖管理
 
-仓库不锁定 .NET SDK 版本，构建使用本机已装的最新 SDK，只要求 .NET 10 或更高版本；目标框架 `net10.0` 由各项目文件决定，不随 SDK 变化。`global.json` 只用来选择测试运行器（Microsoft.Testing.Platform）。
+仓库不锁定 .NET SDK 版本，构建使用本机已装的最新 SDK，只要求 .NET 11 或更高版本；目标框架 `net11.0` 由各项目文件决定，不随 SDK 变化。`global.json` 只用来选择测试运行器（Microsoft.Testing.Platform）。
 
 ASP.NET Core SignalR 服务端已经包含在共享框架中，不应再引用旧的 `Microsoft.AspNetCore.SignalR 1.x` 包。未使用的 Newtonsoft.Json 也已移除。项目将编译警告视为错误，防止警告长期积累。
 
@@ -337,7 +337,7 @@ Android 主清单包含 INTERNET 权限。本地 API 使用 HTTP，因此只有 
 
 ### 10.1 前置环境
 
-- .NET SDK 10 或更高版本。
+- .NET SDK 11 或更高版本。
 - Node.js 与 npm。
 - Flutter 3.35.x / Dart 3.9.x 或满足 `pubspec.yaml` 的兼容稳定版本。
 
@@ -419,7 +419,7 @@ flutter analyze
 flutter test
 ```
 
-.NET 10 使用 Microsoft Testing Platform 时，解决方案参数采用 `dotnet test --solution TodoDemo.slnx`。把解决方案路径直接写成旧式位置参数会走不同的命令解释方式。
+.NET 11 使用 Microsoft Testing Platform 时，解决方案参数采用 `dotnet test --solution TodoDemo.slnx`。把解决方案路径直接写成旧式位置参数会走不同的命令解释方式。
 
 ## 12. 安全与隐私
 
@@ -472,9 +472,9 @@ flutter test
 ## 15. 官方延伸阅读
 
 - [C# record types](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/records)
-- [ASP.NET Core CORS](https://learn.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-10.0)
-- [ASP.NET Core SignalR JavaScript client](https://learn.microsoft.com/en-us/aspnet/core/signalr/javascript-client?view=aspnetcore-10.0)
-- [Use hubs in ASP.NET Core SignalR](https://learn.microsoft.com/en-us/aspnet/core/signalr/hubs?view=aspnetcore-10.0)
+- [ASP.NET Core CORS](https://learn.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-11.0)
+- [ASP.NET Core SignalR JavaScript client](https://learn.microsoft.com/en-us/aspnet/core/signalr/javascript-client?view=aspnetcore-11.0)
+- [Use hubs in ASP.NET Core SignalR](https://learn.microsoft.com/en-us/aspnet/core/signalr/hubs?view=aspnetcore-11.0)
 - [React useEffect](https://react.dev/reference/react/useEffect)
 - [React exhaustive-deps](https://react.dev/reference/eslint-plugin-react-hooks/lints/exhaustive-deps)
 - [TypeScript type compatibility and unknown](https://www.typescriptlang.org/docs/handbook/type-compatibility)
