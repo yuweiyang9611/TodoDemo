@@ -9,8 +9,8 @@ public sealed class GetInfos(ILogger<GetInfos> logger)
     public SystemInfoDto GetSystemInfos()
     {
         // 运行时 & OS 信息
-        var dotnetVersion = RuntimeInformation.FrameworkDescription; // e.g. ".NET 10.0.0"
-        var clrVersion = Environment.Version.ToString(); // e.g. "10.0.0"
+        var dotnetVersion = RuntimeInformation.FrameworkDescription; // e.g. ".NET 11.0.0"
+        var clrVersion = Environment.Version.ToString(); // e.g. "11.0.0"
         var osDescription = RuntimeInformation.OSDescription; // e.g. "Microsoft Windows 10.0.26200"
         var osArchitecture = RuntimeInformation.OSArchitecture.ToString();
         var processArchitecture = RuntimeInformation.ProcessArchitecture.ToString();

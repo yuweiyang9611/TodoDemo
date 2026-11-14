@@ -10,7 +10,7 @@
 
 ## 项目结构
 
-- `TodoDemo/`：.NET 10 ASP.NET Core API 与 SignalR Hub
+- `TodoDemo/`：.NET 11 ASP.NET Core API 与 SignalR Hub
 - `TodoDemo.Tests/`：MSTest 仓储并发与 CRUD 测试
 - `TodoDemo/web/`：Vite + React + TypeScript 客户端
 - `TodoDemo/app/`：Flutter 跨平台客户端
